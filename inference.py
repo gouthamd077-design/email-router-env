@@ -82,3 +82,8 @@ except Exception as e:
 print(
     f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={','.join(f'{r:.2f}' for r in rewards)}"
 )
+import time
+
+# Keep container alive
+while True:
+    time.sleep(60)

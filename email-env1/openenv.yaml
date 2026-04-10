@@ -1,0 +1,10 @@
+name: email-router-env
+version: 1.0
+
+environment:
+  entry_point: email_env.environment:EmailRouterEnv
+
+tasks:
+  - easy_billing_routing
+  - medium_technical_routing
+  - hard_priority_routing

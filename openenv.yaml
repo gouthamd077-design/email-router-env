@@ -1,0 +1,21 @@
+name: email-router-env
+description: AI agent environment for routing customer support emails
+
+environment:
+  entry_point: email_env.environment:EmailRouterEnv
+
+observation_space:
+  email_type: string
+  priority: string
+
+action_space:
+  action: string
+
+reward:
+  type: float
+  range: [0.0, 1.0]
+
+tasks:
+  - easy_billing_routing
+  - medium_technical_routing
+  - hard_priority_routing

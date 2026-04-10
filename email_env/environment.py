@@ -1,23 +1,5 @@
 import random
-from pydantic import BaseModel
 
-
-# ✅ Models (required for OpenEnv)
-
-class Observation(BaseModel):
-    email_type: str
-    priority: str
-
-
-class Action(BaseModel):
-    action: str
-
-
-class Reward(BaseModel):
-    score: float
-
-
-# ✅ Environment
 
 class EmailRouterEnv:
 
@@ -25,7 +7,6 @@ class EmailRouterEnv:
         self.task = task
         self.state_data = None
 
-    # ✅ RESET (FIXED - no extra fields returned)
     def reset(self):
         email_type = random.choice(["billing", "technical", "general"])
         priority = random.choice(["low", "medium", "high"])
@@ -36,13 +17,12 @@ class EmailRouterEnv:
             "step_count": 0
         }
 
-        return Observation(
-            email_type=email_type,
-            priority=priority
-        )
+        return {
+            "email_type": email_type,
+            "priority": priority
+        }
 
-    # ✅ STEP (OpenEnv compliant)
-    def step(self, action: Action):
+    def step(self, action):
         self.state_data["step_count"] += 1
 
         correct_map = {
@@ -53,17 +33,17 @@ class EmailRouterEnv:
 
         correct_action = correct_map[self.state_data["email_type"]]
 
-        score = 1.0 if action.action == correct_action else 0.0
+        score = 1.0 if action["action"] == correct_action else 0.0
 
-        obs = Observation(
-            email_type=self.state_data["email_type"],
-            priority=self.state_data["priority"]
+        return (
+            {
+                "email_type": self.state_data["email_type"],
+                "priority": self.state_data["priority"]
+            },
+            {"score": score},
+            True,
+            {}
         )
 
-        done = True
-
-        return obs, Reward(score=score), done, {}
-
-    # ✅ STATE (required)
     def state(self):
         return self.state_data
